@@ -621,8 +621,14 @@ int main( int argc, char** argv )
         else
         {
             updateCamera();
-            context->launch( 0, width, height );
-            sutil::displayBufferPPM( out_file.c_str(), getOutputBuffer(), false );
+
+            for (int i = 0; i < 20; ++i)
+            {
+                context->launch(0, width, height);
+                context["frame_number"]->setUint(frame_number++);
+            }
+
+            sutil::displayBufferPPM(out_file.c_str(), getOutputBuffer(), false);
             destroyContext();
         }
 
