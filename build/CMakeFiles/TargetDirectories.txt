@@ -26,6 +26,7 @@ C:/ProgramData/NVIDIA Corporation/OptiX SDK 6.0.0/SDK/build/optixSSIMPredictor/C
 C:/ProgramData/NVIDIA Corporation/OptiX SDK 6.0.0/SDK/build/optixTextureSampler/CMakeFiles/optixTextureSampler.dir
 C:/ProgramData/NVIDIA Corporation/OptiX SDK 6.0.0/SDK/build/optixTutorial/CMakeFiles/optixTutorial.dir
 C:/ProgramData/NVIDIA Corporation/OptiX SDK 6.0.0/SDK/build/optixWhitted/CMakeFiles/optixWhitted.dir
+C:/ProgramData/NVIDIA Corporation/OptiX SDK 6.0.0/SDK/build/optixRaymarching/CMakeFiles/optixRaymarching.dir
 C:/ProgramData/NVIDIA Corporation/OptiX SDK 6.0.0/SDK/build/primeInstancing/CMakeFiles/primeInstancing.dir
 C:/ProgramData/NVIDIA Corporation/OptiX SDK 6.0.0/SDK/build/primeMasking/CMakeFiles/primeMasking.dir
 C:/ProgramData/NVIDIA Corporation/OptiX SDK 6.0.0/SDK/build/primeMultiBuffering/CMakeFiles/primeMultiBuffering.dir

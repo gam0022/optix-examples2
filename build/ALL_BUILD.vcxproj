@@ -244,6 +244,10 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Project>{A8FA884B-B617-3DF6-B601-37BD3CF02127}</Project>
       <Name>optixRaycasting</Name>
     </ProjectReference>
+    <ProjectReference Include="C:\ProgramData\NVIDIA Corporation\OptiX SDK 6.0.0\SDK\build\optixRaymarching\optixRaymarching.vcxproj">
+      <Project>{0F49F2B2-58BE-3766-9417-91FF17E8A15E}</Project>
+      <Name>optixRaymarching</Name>
+    </ProjectReference>
     <ProjectReference Include="C:\ProgramData\NVIDIA Corporation\OptiX SDK 6.0.0\SDK\build\optixSSIMPredictor\optixSSIMPredictor.vcxproj">
       <Project>{C4ADA458-7F24-3AAA-A110-C4B109DB58A5}</Project>
       <Name>optixSSIMPredictor</Name>
