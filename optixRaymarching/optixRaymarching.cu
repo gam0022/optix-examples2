@@ -324,7 +324,20 @@ float map(float3 p)
 }
 
 const float EPS_N = 1e-4;
-#define calcNormal(p, dFunc) normalize(make_float3(EPS_N, -EPS_N, -EPS_N) * dFunc(p + make_float3(EPS_N, -EPS_N, -EPS_N)) + make_float3(-EPS_N, -EPS_N, EPS_N) * dFunc(p + make_float3(-EPS_N, -EPS_N, EPS_N) + make_float3(-EPS_N, EPS_N, -EPS_N) * dFunc(p + make_float3(-EPS_N, EPS_N, -EPS_N)) + make_float3(EPS_N, EPS_N, EPS_N) * dFunc(p + make_float3(EPS_N, EPS_N, EPS_N))))
+#define calcNormal(p, dFunc) normalize(\
+    make_float3( EPS_N, -EPS_N, -EPS_N) * dFunc(p + make_float3( EPS_N, -EPS_N, -EPS_N)) + \
+    make_float3(-EPS_N, -EPS_N,  EPS_N) * dFunc(p + make_float3(-EPS_N, -EPS_N,  EPS_N)) + \
+    make_float3(-EPS_N,  EPS_N, -EPS_N) * dFunc(p + make_float3(-EPS_N,  EPS_N, -EPS_N)) + \
+    make_float3( EPS_N,  EPS_N,  EPS_N) * dFunc(p + make_float3( EPS_N,  EPS_N,  EPS_N)))
+
+float3 calcNormalBasic(float3 p)
+{
+    return normalize(make_float3(
+        map(p + make_float3(EPS_N, 0.0, 0.0)) - map(p + make_float3(-EPS_N, 0.0, 0.0)),
+        map(p + make_float3(0.0, EPS_N, 0.0)) - map(p + make_float3(0.0, -EPS_N, 0.0)),
+        map(p + make_float3(0.0, 0.0, EPS_N)) - map(p + make_float3(0.0, 0.0, -EPS_N))
+    ));
+}
 
 RT_PROGRAM void intersect(int primIdx)
 {
@@ -345,7 +358,7 @@ RT_PROGRAM void intersect(int primIdx)
 
     if (abs(d) < EPS && rtPotentialIntersection(t))
     {
-        shading_normal = geometric_normal = normalize(p - center);//calcNormal(p, map);
+        shading_normal = geometric_normal = calcNormal(p, map);
         texcoord = make_float3(p.x, p.y, 0);
         lgt_idx = lgt_instance;
         rtReportIntersection(0);
@@ -353,7 +366,7 @@ RT_PROGRAM void intersect(int primIdx)
 }
 
 RT_PROGRAM void bounds(int, float result[6])
-{ 
+{
     optix::Aabb* aabb = (optix::Aabb*)result;
     aabb->m_min = center - size;
     aabb->m_max = center + size;
