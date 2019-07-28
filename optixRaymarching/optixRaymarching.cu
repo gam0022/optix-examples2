@@ -315,12 +315,62 @@ RT_PROGRAM void miss()
 rtDeclareVariable(float3, center, , );
 rtDeclareVariable(float3, size, , );
 rtDeclareVariable(int, lgt_instance, , ) = {0};
-rtDeclareVariable(float3, texcoord, attribute texcoord, ); 
-rtDeclareVariable(int, lgt_idx, attribute lgt_idx, ); 
+rtDeclareVariable(float3, texcoord, attribute texcoord, );
+rtDeclareVariable(int, lgt_idx, attribute lgt_idx, );
+
+float dMenger(float3 z0, float3 offset, float scale) {
+    float4 z = make_float4(z0, 1.0);
+    for (int n = 0; n < 4; n++) {
+        // z = abs(z);
+        z.x = abs(z.x);
+        z.y = abs(z.y);
+        z.z = abs(z.z);
+        z.w = abs(z.w);
+
+        // if (z.x < z.y) z.xy = z.yx;
+        if (z.x < z.y)
+        {
+            float x = z.x;
+            z.x = z.y;
+            z.y = x;
+        }
+
+        // if (z.x < z.z) z.xz = z.zx;
+        if (z.x < z.z)
+        {
+            float x = z.x;
+            z.x = z.z;
+            z.z = x;
+        }
+
+        // if (z.y < z.z) z.yz = z.zy;
+        if (z.y < z.z)
+        {
+            float y = z.y;
+            z.y = z.z;
+            z.z = y;
+        }
+
+        z *= scale;
+        // z.xyz -= offset * (scale - 1.0);
+        z.x -= offset.x * (scale - 1.0);
+        z.y -= offset.y * (scale - 1.0);
+        z.z -= offset.z * (scale - 1.0);
+
+        if (z.z < -0.5 * offset.z * (scale - 1.0))
+            z.z += offset.z * (scale - 1.0);
+    }
+    // return (length(max(abs(z.xyz) - make_float3(1.0, 1.0, 1.0), 0.0)) - 0.05) / z.w;
+    return (length(make_float3(max(abs(z.x) - 1.0, 0.0), max(abs(z.y) - 1.0, 0.0), max(abs(z.z) - 1.0, 0.0))) - 0.05) / z.w;
+}
 
 float map(float3 p)
 {
-    return length(p - center) - 100.0;
+    //return length(p - center) - 100.0;
+
+    float scale = 100;
+    // f((p - position) / scale) * scale;
+    return dMenger((p - center) / scale, make_float3(1, 1, 1), 3) * scale;
 }
 
 const float EPS_N = 1e-4;
