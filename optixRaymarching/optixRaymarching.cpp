@@ -76,6 +76,9 @@ int            sqrt_num_samples = 2;
 int            rr_begin_depth = 1;
 Program        pgram_intersection = 0;
 Program        pgram_bounding_box = 0;
+Program        pgram_raymarching_intersection = 0;
+Program        pgram_raymarching_bounding_box = 0;
+
 
 // Camera state
 float3         camera_up;
@@ -184,6 +187,33 @@ GeometryInstance createParallelogram(
     return gi;
 }
 
+GeometryInstance createRaymrachingObject(
+    const float3& anchor,
+    const float3& offset1,
+    const float3& offset2)
+{
+    Geometry raymarching = context->createGeometry();
+    raymarching->setPrimitiveCount(1u);
+    raymarching->setIntersectionProgram(pgram_raymarching_intersection);
+    raymarching->setBoundingBoxProgram(pgram_raymarching_bounding_box);
+
+    float3 normal = normalize(cross(offset1, offset2));
+    float d = dot(normal, anchor);
+    float4 plane = make_float4(normal, d);
+
+    float3 v1 = offset1 / dot(offset1, offset1);
+    float3 v2 = offset2 / dot(offset2, offset2);
+
+    raymarching["plane"]->setFloat(plane);
+    raymarching["anchor"]->setFloat(anchor);
+    raymarching["v1"]->setFloat(v1);
+    raymarching["v2"]->setFloat(v2);
+
+    GeometryInstance gi = context->createGeometryInstance();
+    gi->setGeometry(raymarching);
+    return gi;
+}
+
 
 void createContext()
 {
@@ -242,6 +272,10 @@ void loadGeometry()
     Program diffuse_em = context->createProgramFromPTXString( ptx, "diffuseEmitter" );
     diffuse_light->setClosestHitProgram( 0, diffuse_em );
 
+    // Set up Raymarching programs
+    pgram_raymarching_bounding_box = context->createProgramFromPTXString(ptx, "bounds");
+    pgram_raymarching_intersection = context->createProgramFromPTXString(ptx, "intersect");
+
     // Set up parallelogram programs
     ptx = sutil::getPtxString( SAMPLE_NAME, "parallelogram.cu" );
     pgram_bounding_box = context->createProgramFromPTXString( ptx, "bounds" );
@@ -286,7 +320,7 @@ void loadGeometry()
     setMaterial(gis.back(), diffuse, "diffuse_color", red);
 
     // Short block
-    gis.push_back( createParallelogram( make_float3( 130.0f, 165.0f, 65.0f),
+    /*gis.push_back( createParallelogram( make_float3( 130.0f, 165.0f, 65.0f),
                                         make_float3( -48.0f, 0.0f, 160.0f),
                                         make_float3( 160.0f, 0.0f, 49.0f) ) );
     setMaterial(gis.back(), diffuse, "diffuse_color", white);
@@ -327,6 +361,12 @@ void loadGeometry()
     gis.push_back( createParallelogram( make_float3( 265.0f, 0.0f, 296.0f),
                                         make_float3( 0.0f, 330.0f, 0.0f),
                                         make_float3( 158.0f, 0.0f, -49.0f) ) );
+    setMaterial(gis.back(), diffuse, "diffuse_color", white);*/
+
+    // Raymarcing
+    gis.push_back(createRaymrachingObject(make_float3(423.0f, 330.0f, 247.0f),
+        make_float3(-158.0f, 0.0f, 49.0f),
+        make_float3(49.0f, 0.0f, 159.0f)));
     setMaterial(gis.back(), diffuse, "diffuse_color", white);
 
     // Create shadow group (no light)
