@@ -370,7 +370,8 @@ float map(float3 p)
 
     float scale = 100;
     // f((p - position) / scale) * scale;
-    return dMenger((p - center) / scale, make_float3(1, 1, 1), 3) * scale;
+    // return dMenger((p - center) / scale, make_float3(1.23, 1.65, 1.45), 2.56) * scale;
+    return dMenger((p - center) / scale, make_float3(1, 1, 1), 3.1) * scale;
 }
 
 const float EPS_N = 1e-4;
@@ -391,11 +392,11 @@ float3 calcNormalBasic(float3 p)
 
 RT_PROGRAM void intersect(int primIdx)
 {
-    const float EPS = 1e-3;
+    const float EPS = 1e-2;
     float t = 0.0, d = 1e100;
     float3 p = ray.origin;
 
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 50; i++)
     {
         d = map(p);
         t += d;

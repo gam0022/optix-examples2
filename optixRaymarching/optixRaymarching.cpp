@@ -355,7 +355,7 @@ void loadGeometry()
 
     // Raymarcing
     gis.push_back(createRaymrachingObject(
-        make_float3(265.0f, 100.0f, 247.0f),
+        make_float3(278.0f, 120.0f, 278.0f),
         make_float3(100.0f, 100.0f, 100.0f)));
     setMaterial(gis.back(), diffuse, "diffuse_color", white);
 
