@@ -188,26 +188,16 @@ GeometryInstance createParallelogram(
 }
 
 GeometryInstance createRaymrachingObject(
-    const float3& anchor,
-    const float3& offset1,
-    const float3& offset2)
+    const float3& center,
+    const float3& size)
 {
     Geometry raymarching = context->createGeometry();
     raymarching->setPrimitiveCount(1u);
     raymarching->setIntersectionProgram(pgram_raymarching_intersection);
     raymarching->setBoundingBoxProgram(pgram_raymarching_bounding_box);
 
-    float3 normal = normalize(cross(offset1, offset2));
-    float d = dot(normal, anchor);
-    float4 plane = make_float4(normal, d);
-
-    float3 v1 = offset1 / dot(offset1, offset1);
-    float3 v2 = offset2 / dot(offset2, offset2);
-
-    raymarching["plane"]->setFloat(plane);
-    raymarching["anchor"]->setFloat(anchor);
-    raymarching["v1"]->setFloat(v1);
-    raymarching["v2"]->setFloat(v2);
+    raymarching["center"]->setFloat(center);
+    raymarching["size"]->setFloat(size);
 
     GeometryInstance gi = context->createGeometryInstance();
     gi->setGeometry(raymarching);
@@ -364,9 +354,9 @@ void loadGeometry()
     setMaterial(gis.back(), diffuse, "diffuse_color", white);*/
 
     // Raymarcing
-    gis.push_back(createRaymrachingObject(make_float3(423.0f, 330.0f, 247.0f),
-        make_float3(-158.0f, 0.0f, 49.0f),
-        make_float3(49.0f, 0.0f, 159.0f)));
+    gis.push_back(createRaymrachingObject(
+        make_float3(265.0f, 100.0f, 247.0f),
+        make_float3(100.0f, 100.0f, 100.0f)));
     setMaterial(gis.back(), diffuse, "diffuse_color", white);
 
     // Create shadow group (no light)
